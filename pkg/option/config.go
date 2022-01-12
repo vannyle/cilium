@@ -2690,6 +2690,10 @@ func (c *DaemonConfig) Populate() {
 		}
 	}
 
+	if nativeRoutingCIDR == "" && ipv4NativeRoutingCIDR == "" && c.EnableAutoDirectRouting {
+		log.Warnf("%s will be ineffective since %s is not set", EnableAutoDirectRoutingName, IPv4NativeRoutingCIDR)
+	}
+
 	ipv6NativeRoutingCIDR := viper.GetString(IPv6NativeRoutingCIDR)
 
 	if ipv6NativeRoutingCIDR != "" {
@@ -2698,6 +2702,10 @@ func (c *DaemonConfig) Populate() {
 		if len(c.IPv6NativeRoutingCIDR.IP) != net.IPv6len {
 			log.Fatalf("%s must be an IPv6 CIDR", IPv6NativeRoutingCIDR)
 		}
+	}
+
+	if ipv6NativeRoutingCIDR == "" && c.EnableAutoDirectRouting {
+		log.Warnf("%s will be ineffective since %s is not set", EnableAutoDirectRoutingName, IPv6NativeRoutingCIDR)
 	}
 
 	if err := c.calculateBPFMapSizes(); err != nil {
